@@ -20,6 +20,9 @@ const PersonForm = ({ persons, setPersons, setNotification }) => {
         setNewNumber('');
         setNotification(`Updated ${response.data.name}`);
       })
+      .catch(error => {
+        setNotification(error.response.data.error, true)
+      })
   }
 
   const addPerson = (event) => {
@@ -44,6 +47,9 @@ const PersonForm = ({ persons, setPersons, setNotification }) => {
         setNewName('');
         setNewNumber('');
         setNotification(`Added ${response.data.name}`);
+      })
+      .catch(error => {
+        setNotification(error.response.data.error, true)
       })
   }
 
