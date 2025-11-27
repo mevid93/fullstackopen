@@ -1,3 +1,5 @@
+const { test, describe } = require('node:test')
+const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
 
 const listWithOneBlog = [
@@ -5,13 +7,13 @@ const listWithOneBlog = [
     _id: '5a422aa71b54a676234d17f8',
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
     likes: 5,
     __v: 0
   }
 ]
 
-const blogs = [
+const listWithMoreBlogs = [
   {
     _id: "5a422a851b54a676234d17f7",
     title: "React patterns",
@@ -66,83 +68,77 @@ test('dummy returns one', () => {
   const blogs = []
 
   const result = listHelper.dummy(blogs)
-  expect(result).toBe(1)
+  assert.strictEqual(result, 1)
 })
 
 describe('total likes', () => {
-
   test('of empty list is zero', () => {
     const result = listHelper.totalLikes([])
-    expect(result).toBe(0)
+    assert.strictEqual(result, 0)
   })
 
-  test('when list has only one blog equals the likes of that', () => {
+  test('when list has only one blog, equals the likes of that', () => {
     const result = listHelper.totalLikes(listWithOneBlog)
-    expect(result).toBe(5)
+    assert.strictEqual(result, 5)
   })
 
   test('of a bigger list is calculated right', () => {
-    const result = listHelper.totalLikes(blogs)
-    expect(result).toBe(36)
+    const result = listHelper.totalLikes(listWithMoreBlogs)
+    assert.strictEqual(result, 36)
   })
-
 })
 
 describe('favorite blog', () => {
-
   test('of empty list is undefined', () => {
     const result = listHelper.favoriteBlog([])
-    expect(result).toEqual(undefined)
+    assert.strictEqual(result, undefined)
   })
 
   test('when list has only one blog is that only blog', () => {
     const result = listHelper.favoriteBlog(listWithOneBlog)
-    expect(result).toEqual(listWithOneBlog[0])
+    assert.strictEqual(result, listWithOneBlog[0])
   })
 
   test('of a bigger list is determined right', () => {
-    const result = listHelper.favoriteBlog(blogs)
-    expect(result).toEqual(blogs[2])
+    const result = listHelper.favoriteBlog(listWithMoreBlogs)
+    assert.strictEqual(result, listWithMoreBlogs[2])
   })
-
 })
 
 describe('most blogs', () => {
-
   test('of empty list is undefined', () => {
     const result = listHelper.mostBlogs([])
-    expect(result).toEqual(undefined)
+    assert.strictEqual(result, undefined)
   })
 
   test('when list has only one blog is author of that only blog', () => {
     const result = listHelper.mostBlogs(listWithOneBlog)
-    expect(result).toEqual({ author: listWithOneBlog[0].author, blogs: 1 })
+    const answer = { author: listWithOneBlog[0].author, blogs: 1 }
+    assert.deepStrictEqual(result, answer)
   })
 
   test('of a bigger list is determined right', () => {
-    const result = listHelper.mostBlogs(blogs)
+    const result = listHelper.mostBlogs(listWithMoreBlogs)
     const answer = { author: "Robert C. Martin", blogs: 3 }
-    expect(result).toEqual(answer)
+    assert.deepStrictEqual(result, answer)
   })
-
 })
 
 describe('most likes', () => {
-
   test('of empty list is undefined', () => {
     const result = listHelper.mostLikes([])
-    expect(result).toEqual(undefined)
+    assert.strictEqual(result, undefined)
   })
 
   test('when list has only one blog is author of that only blog', () => {
     const result = listHelper.mostLikes(listWithOneBlog)
-    expect(result).toEqual({ author: listWithOneBlog[0].author, likes: listWithOneBlog[0].likes })
+    const answer = { author: listWithOneBlog[0].author, likes: listWithOneBlog[0].likes }
+    assert.deepStrictEqual(result, answer)
   })
 
   test('of a bigger list is determined right', () => {
-    const result = listHelper.mostLikes(blogs)
+    const result = listHelper.mostLikes(listWithMoreBlogs)
     const answer = { author: "Edsger W. Dijkstra", likes: 17 }
-    expect(result).toEqual(answer)
+    assert.deepStrictEqual(result, answer)
   })
-
 })

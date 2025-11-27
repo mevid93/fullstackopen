@@ -1,17 +1,23 @@
+const assert = require('node:assert')
+const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const User = require('../models/user')
-const api = supertest(app)
+const Blog = require('../models/user')
 const helper = require('./test_helper')
 
+const api = supertest(app)
+
 beforeEach(async () => {
-  await User.deleteMany({})
-  await User.insertMany(helper.initialUsers)
+  await Blog.deleteMany({})
+  await Blog.insertMany(helper.initialUsers)
+})
+
+after(async () => {
+  await mongoose.connection.close()
 })
 
 describe('users api', () => {
-
   test('users are returned as json', async () => {
     await api
       .get('/api/users')
@@ -21,13 +27,13 @@ describe('users api', () => {
 
   test('correct number of users are returned', async () => {
     const response = await api.get('/api/users')
-    expect(response.body.length).toBe(helper.initialUsers.length)
+    assert.strictEqual(response.body.length, helper.initialUsers.length)
   })
 
   test('user identifier is named as id', async () => {
     const response = await api.get('/api/users')
-    expect(response.body[0]._id).not.toBeDefined()
-    expect(response.body[0].id).toBeDefined()
+    assert.strictEqual(response.body[0]._id, undefined)
+    assert.notStrictEqual(response.body[0].id, undefined)
   })
 
   test('new user can be added', async () => {
@@ -43,7 +49,7 @@ describe('users api', () => {
       .expect('Content-Type', /application\/json/)
 
     const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd.length).toBe(helper.initialUsers.length + 1)
+    assert.strictEqual(usersAtEnd.length, helper.initialUsers.length + 1)
   })
 
   test('username must be unique', async () => {
@@ -75,8 +81,4 @@ describe('users api', () => {
     await api.post('/api/users').send(newUser).expect(400)
   })
 
-})
-
-afterAll(() => {
-  mongoose.connection.close()
 })
